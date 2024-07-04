@@ -1,6 +1,6 @@
 import logging
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class Player:
         if isinstance(title, str):
             try:
                 self.title = Title[title.upper()]
-            except ValueError as e:
+            except ValueError:
                 logger.warning("Invalid title, setting to None.")
         else:
             self.title = title
@@ -58,5 +58,3 @@ class Player:
             return f"{self.title.name} {self.first_name} {self.last_name} " + \
                         f"({self.rating})"
         return f"{self.first_name} {self.last_name} ({self.rating})"
-
-

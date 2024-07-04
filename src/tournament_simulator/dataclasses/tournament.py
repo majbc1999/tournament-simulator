@@ -1,6 +1,6 @@
 import logging
 import random
-from abc import ABC, abstractmethod
+from abc import ABC
 from enum import Enum
 from typing import Dict, List, Optional, Tuple
 
@@ -9,6 +9,7 @@ import pandas as pd
 from tournament_simulator.dataclasses.player import Player
 
 logger = logging.getLogger(__name__)
+
 
 class Result(Enum):
     WHITE = (1, 0)
@@ -67,7 +68,7 @@ class Game:
         else:
             draw_prob = 0.05
 
-        # enhance draw probability if both players have high ratings and 
+        # enhance draw probability if both players have high ratings and
         # vice versa
         higher_player_rating = max(self.white.rating, self.black.rating)
 
@@ -89,7 +90,7 @@ class Game:
                                               black_prob * 0.95,
                                               draw_prob],
                                      k=1)[0]
-        
+
         return
 
 
@@ -205,7 +206,7 @@ class Tournament(ABC):
                     if game.result == Result.WHITE:
                         ldb[game.white.full_name()][4] += 1
                     elif game.result == Result.BLACK:
-                        ldb[game.black.full_name()][4] += 1                        
+                        ldb[game.black.full_name()][4] += 1
 
         if self.tiebreak == 'buchholz':
             for player in ldb:

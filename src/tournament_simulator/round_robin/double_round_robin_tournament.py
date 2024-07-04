@@ -3,8 +3,7 @@ from copy import deepcopy
 from typing import List, Optional
 
 from tournament_simulator.dataclasses.player import Player
-from tournament_simulator.dataclasses.tournament import (Game, Result, Round,
-                                                         Tournament)
+from tournament_simulator.dataclasses.tournament import Game, Round, Tournament
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +12,6 @@ class DoubleRoundRobinTournament(Tournament):
     """
     Class representing a double round-robin chess tournament.
     """
-    rounds: int
 
     def __init__(self,
                  name: str,
@@ -29,32 +27,35 @@ class DoubleRoundRobinTournament(Tournament):
         if self.rounds is not None:
             logger.warning("Pairings already generated, skipping.")
             return
-        
+
         player_list: List[Optional[Player]] = deepcopy(self.players)
 
         if len(self.players) % 2:
             player_list.append(None)
-        
+
         rounds = []
 
         player_whites = {player: 0 for player in player_list}
 
-        for round in range(0, len(self.players)):
+        for round_num in range(0, len(self.players)):
             games = []
 
-            player_list = [player_list[0]] + [player_list[-1]] + player_list[1:-1]
+            player_list = [player_list[0]] + [player_list[-1]] + \
+                player_list[1:-1]
 
             for i in range(0, len(player_list) // 2):
+                player_1 = player_list[i]
+                player_2 = player_list[-i-1]
 
-                if player_list[i] and player_list[-i-1]:
-                    if player_whites[player_list[i]] <= player_whites[player_list[-i-1]]:
-                        games.append(Game(player_list[i], player_list[-i-1]))
-                        player_whites[player_list[i]] += 1
+                if player_1 and player_2:
+                    if player_whites[player_1] <= player_whites[player_2]:  # noqa: E501
+                        games.append(Game(player_1, player_2))
+                        player_whites[player_1] += 1
                     else:
-                        games.append(Game(player_list[-i-1], player_list[i]))
-                        player_whites[player_list[-i-1]] += 1
+                        games.append(Game(player_2, player_1))
+                        player_whites[player_2] += 1
 
-            rounds.append(Round(round + 1, games))
+            rounds.append(Round(round_num + 1, games))
 
         self.rounds = deepcopy(rounds)
 
